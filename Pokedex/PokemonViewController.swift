@@ -1,5 +1,7 @@
 import UIKit
-var caughtPokemonDict = [String: Bool]()
+
+//var caughtPokemonDict = [String: Bool]()
+
 class PokemonViewController: UIViewController {
     var url: String!
     
@@ -10,14 +12,14 @@ class PokemonViewController: UIViewController {
     @IBOutlet var catchButton: UIButton!
     
     @IBAction func toggleCatch() {
-        if caughtPokemonDict[self.nameLabel.text!] == true {
-            caughtPokemonDict[self.nameLabel.text!] = false
+        if UserDefaults.standard.bool(forKey: self.nameLabel.text!) == true {
+            UserDefaults.standard.set(false, forKey: self.nameLabel.text!)
             catchButton.setTitle("Catch", for: [])
-            return
         }
-        caughtPokemonDict[self.nameLabel.text!] = true
-        catchButton.setTitle("Release", for: [])
-        return
+        else {
+            UserDefaults.standard.set(true, forKey: self.nameLabel.text!)
+            catchButton.setTitle("Release", for: [])
+        }
     }
     
     func capitalize(text: String) -> String {
@@ -56,10 +58,10 @@ class PokemonViewController: UIViewController {
                             self.type2Label.text = typeEntry.type.name
                         }
                     }
-                    if caughtPokemonDict[self.nameLabel.text!] == true {
+                    if UserDefaults.standard.bool(forKey: self.nameLabel.text!) == true {
                         self.catchButton.setTitle("Release", for: [])
                     }
-                    else if caughtPokemonDict[self.nameLabel.text!] == false || caughtPokemonDict[self.nameLabel.text!] == nil {
+                    else if UserDefaults.standard.bool(forKey: self.nameLabel.text!) == false || UserDefaults.standard.bool(forKey: self.nameLabel.text!) == nil {
                         self.catchButton.setTitle("Catch", for: [])
                     }
                 }
