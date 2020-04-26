@@ -10,15 +10,18 @@ class PokemonViewController: UIViewController {
     @IBOutlet var type1Label: UILabel!
     @IBOutlet var type2Label: UILabel!
     @IBOutlet var catchButton: UIButton!
+    @IBOutlet var spriteImage: UIImageView!
     
     @IBAction func toggleCatch() {
         if UserDefaults.standard.bool(forKey: self.nameLabel.text!) == true {
             UserDefaults.standard.set(false, forKey: self.nameLabel.text!)
             catchButton.setTitle("Catch", for: [])
+            //print("Toggle False = \(UserDefaults.standard.bool(forKey: self.nameLabel.text!))")
         }
         else {
             UserDefaults.standard.set(true, forKey: self.nameLabel.text!)
             catchButton.setTitle("Release", for: [])
+            //print("Toggle True = \(UserDefaults.standard.bool(forKey: self.nameLabel.text!))")
         }
     }
     
@@ -34,7 +37,7 @@ class PokemonViewController: UIViewController {
         type1Label.text = ""
         type2Label.text = ""
         catchButton.setTitle("", for: [])
-        
+        //print("Before Load = \(UserDefaults.standard.bool(forKey: self.nameLabel.text!))")
         loadPokemon()
     }
 
@@ -48,6 +51,14 @@ class PokemonViewController: UIViewController {
                 let result = try JSONDecoder().decode(PokemonResult.self, from: data)
                 DispatchQueue.main.async {
                     self.navigationItem.title = self.capitalize(text: result.name)
+                    
+                    do {
+                        self.spriteImage.image = UIImage(data: try Data(contentsOf: URL(string: result.sprites.front_default)!))
+                    }
+                    catch let error {
+                        print(error)
+                    }
+                    
                     self.nameLabel.text = self.capitalize(text: result.name)
                     self.numberLabel.text = String(format: "#%03d", result.id)
                     for typeEntry in result.types {
@@ -58,10 +69,11 @@ class PokemonViewController: UIViewController {
                             self.type2Label.text = typeEntry.type.name
                         }
                     }
+                    //print("Loading = \(UserDefaults.standard.bool(forKey: self.nameLabel.text!))")
                     if UserDefaults.standard.bool(forKey: self.nameLabel.text!) == true {
                         self.catchButton.setTitle("Release", for: [])
                     }
-                    else if UserDefaults.standard.bool(forKey: self.nameLabel.text!) == false || UserDefaults.standard.bool(forKey: self.nameLabel.text!) == nil {
+                    else if UserDefaults.standard.bool(forKey: self.nameLabel.text!) == false /*|| UserDefaults.standard.bool(forKey: self.nameLabel.text!) == nil*/ {
                         self.catchButton.setTitle("Catch", for: [])
                     }
                 }
